@@ -1,4 +1,3 @@
-
 require 'date'
 
 class Item
@@ -41,6 +40,6 @@ class Item
     current_date = Time.now.strftime('%d/%m/%Y').split('/')
     current_date = Time.new(current_date[2], current_date[1], current_date[0])
 
-    ( (current_date.year - publish_date.year) + ((current_date.month - publish_date.month) / 12) ) >= 10
+    ((current_date.year - publish_date.year) + ((current_date.month - publish_date.month) / 12)) >= 10
   end
 end
