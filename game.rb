@@ -1,23 +1,19 @@
 require_relative 'item'
-require_relative 'game'
 
 class Game < Item
   def initialize(date)
+    super
     @multiplayer = false
     @last_played_at = date
     @list_of_games = []
   end
 
   def can_be_archived?
-    if super & @last_played_at > 2.year.ago
-      true
-    else
-      false
-    end
+    super & @last_played_at > 2.year.ago
   end
 
   def list_of_games
-    puts "List of Games:"
+    puts 'List of Games:'
     @list_of_games.each do |game|
       puts "Game: #{game}"
     end
@@ -27,5 +23,4 @@ class Game < Item
     game = Game.new(genre, author, source, label, publish_date)
     @list_of_games << game
   end
-
 end
