@@ -12,4 +12,3 @@ class Game < Item
     super & @last_played_at > 2.year.ago
   end
 end
-
