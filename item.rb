@@ -34,7 +34,7 @@ class Item
 
   private
 
-  def can_be_archieved?
+  def can_be_archived?
     publish_date = @publish_date.split('/')
     publish_date = Time.new(publish_date[2], publish_date[1], publish_date[0])
 
