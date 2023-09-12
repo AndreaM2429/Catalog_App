@@ -67,7 +67,7 @@ class App
   end
 
   def create_book(publish_date, publisher, cover_state, genre)
-    new_book = Book.new(publish_date, publisher, cover_state)
+    new_book = Book.new(publish_date, publisher, cover_state, nil, false)
     new_book.genre = Genre.new(genre)
     new_book
   end
