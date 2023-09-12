@@ -6,10 +6,10 @@ class Main
     @menu = {
       '1' => 'list_all_books', '2' => 'list_all_albums',
       '3' => 'list_all_movies', '4' => 'list_all_games',
-      '3' => 'list_all_genre', '4' => 'list_all_labels',
-      '5' => 'list_all_authors', '6' => 'add_a_book',
-      '7' => 'add_a_music_album', '8' => 'add_a_game',
-      '9' => 'end_app'
+      '5' => 'list_all_genre', '6' => 'list_all_labels',
+      '7' => 'list_all_authors', '8' => 'add_a_book',
+      '9' => 'add_a_music_album', '10' => 'add_a_game',
+      '11' => 'end_app'
     }.freeze
   end
 
