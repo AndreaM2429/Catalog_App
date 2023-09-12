@@ -48,6 +48,17 @@ class App
     @genres << genre
   end
 
+  def list_all_genre
+    if @genres.empty?
+      puts "\nThis is empty! :("
+    else
+      puts "\nList all albums"
+      @genres.each do |element|
+        puts " ID: #{element.id}, Genre: #{element.name}"
+      end
+    end
+  end
+
   def end_app
     puts 'Thank you for using this app (•◡•)丿'
     exit
