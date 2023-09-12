@@ -11,11 +11,13 @@ class App
 
   def list_all_books
     if @books_list.empty?
-      puts "\n There is no books yet"
+      puts "\nThere is no books yet"
     else
-      puts "\n List of books"
+      puts "\nList of books"
       @books_list.each_with_index do |book, index|
-      puts "#{index}: #{book.label.title} by #{book.autor.first_name} #{book.author.last_name}"
+        puts "#{index}: #{book.label.title} by #{book.autor.first_name} #{book.author.last_name}"
+      end
+    end
   end
 
   def list_all_albums
@@ -50,15 +52,24 @@ class App
     p "Book's cover state: "
     cover_state = gets.chomp
 
-    create_book(publish_date, publisher, cover_state, genre, author_name, author_last_name, title, color)
+    book = create_book(publish_date, publisher, cover_state, genre)
+    book.author = create_author(author_name, author_last_name)
+    book.label = create_label(title, color)
+    @books_list << book
   end
 
-  def create_book(publish_date, publisher, cover_state, genre, author_name, author_last_name, title, color)
+  def create_author(author_name, author_last_name)
+    Author.new(author_name, author_last_name)
+  end
+
+  def create_label(title, color)
+    Label.new(title, color)
+  end
+
+  def create_book(publish_date, publisher, cover_state, genre)
     new_book = Book.new(publish_date, publisher, cover_state)
     new_book.genre = Genre.new(genre)
-    new_book.author = Author.new(author_name, author_last_name)
-    new_book.label = Label.new(title, color)
-    @books_list << new_book
+    new_book
   end
 
   def add_a_music_album
