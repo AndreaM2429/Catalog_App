@@ -9,7 +9,8 @@ class Main
       '5' => 'list_all_genre', '6' => 'list_all_labels',
       '7' => 'list_all_authors', '8' => 'add_a_book',
       '9' => 'add_a_music_album', '10' => 'add_a_game',
-      '11' => 'end_app'
+      '11' => 'add_an_author', '12' => 'add_a_genre',
+      '13' => 'end_app'
     }.freeze
   end
 

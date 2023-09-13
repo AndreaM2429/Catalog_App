@@ -4,6 +4,9 @@ require_relative 'book'
 require_relative 'author'
 require_relative 'label'
 require_relative 'preserve_album_genre'
+require_relative 'game'
+require_relative 'preserve_games'
+require_relative 'preserve_author'
 
 class App
   def initialize
@@ -12,6 +15,8 @@ class App
     @books_list = []
     @labels = []
     @preserve_album_genre = PreserveAlbumGenre.new(@albums, @genres)
+    @authors = PreserveAuthor.new.gets_author || []
+    @games = PreserveGames.new.gets_games || []
     loading_data
   end
 
@@ -86,9 +91,9 @@ class App
     @books_list << book
   end
 
-  def create_author(author_name, author_last_name)
-    Author.new(first_name: author_name, last_name: author_last_name)
-  end
+  # def create_author(author_name, author_last_name)
+  #   Author.new(first_name: author_name, last_name: author_last_name)
+  # end
 
   def create_label(title, color)
     label = Label.new(title, color)
@@ -136,6 +141,78 @@ class App
   def loading_data
     @preserve_album_genre.load_music_albums
     @preserve_album_genre.load_genres
+  end
+
+  def add_an_author
+    print 'Add an Author:'
+    puts 'Add Author`s first name:'
+    first_name = gets.chomp.to_s
+    puts 'Add Author`s last name:'
+    last_name = gets.chomp.to_s
+
+    author = Author.new(first_name: first_name, last_name: last_name)
+    print " Author added!: #{author.first_name} #{author.last_name} "
+
+    @authors << author
+
+    PreserveAuthor.new.save_authors(@authors)
+  end
+
+  def list_all_authors
+    if @authors.empty?
+      puts "\nThis is empty! :("
+    else
+      puts "\nList all authors:"
+      @authors.each do |author|
+        puts " First Name: #{author.first_name}, Last Name: #{author.last_name} "
+      end
+    end
+  end
+
+  def add_a_game
+    print 'Is it multiplayer? [y/n]:'
+    multiplayer = gets.chomp.upcase == 'Y'
+
+    print 'Is it archived? [y/n]:'
+    archived = gets.chomp.upcase == 'Y'
+
+    print 'Add a Published date:'
+    publish_date = gets.chomp.to_s
+
+    print 'Add an Author:'
+    author_name = gets.chomp.to_s
+
+    print 'Add a Genre:'
+    genre_name = gets.chomp.to_s
+
+    print 'Add a Label:'
+    label_name = gets.chomp.to_s
+
+    game = Game.new(publish_date: publish_date, multiplayer: multiplayer)
+    game.archived = archived
+    game.author = author_name
+    game.genre = genre_name
+    game.label = label_name
+
+    @games << game
+
+    PreserveGames.new.save_games(@games)
+  end
+
+  def list_all_games
+    if @games.empty?
+      puts "\nThis is empty! :("
+    else
+      puts "\nList all games"
+      @games.each do |game|
+        puts "ID: #{game.id}
+        Published day: #{game.publish_date}
+        Archived: #{game.archived ? 'Yes' : 'No'}
+        Label: #{game.label}
+        Genre: #{game.genre}
+        Author: #{game.author}"
+      end
+    end
   end
 
   def end_app
