@@ -83,7 +83,7 @@ class App
   end
 
   def create_author(author_name, author_last_name)
-    Author.new(nil, author_name, author_last_name)
+    Author.new(first_name: author_name, last_name: author_last_name)
   end
 
   def create_label(title, color)
