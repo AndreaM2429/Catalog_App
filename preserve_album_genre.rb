@@ -46,4 +46,26 @@ class PreserveAlbumGenre
       @albums << new_album
     end
   end
+
+  def save_genres
+    return if @genres.empty?
+
+    genre_data = @genres.map do |genre|
+      {
+        id: genre.id,
+        name: genre.name
+      }
+    end
+    File.write('genres.json', JSON.pretty_generate(genre_data))
+  end
+
+  def load_genres
+    return unless File.exist?('genres.json')
+
+    genre_data = JSON.parse(File.read('genres.json'))
+    genre_data.each do |genre|
+      existing_genre = @genres.find { |g| g.id == genre['id'] }
+      @genres << Genre.new(genre['name'], genre['id']) unless existing_genre
+    end
+  end
 end
