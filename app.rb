@@ -1,21 +1,24 @@
 require_relative 'genre'
 require_relative 'music_album'
 require_relative 'book'
+require_relative 'author'
+require_relative 'label'
 
 class App
   def initialize
     @albums = []
     @genres = []
     @books_list = []
+    @labels = []
   end
 
-  def list_all_books
-    if @books_list.empty?
-      puts "\nThere is no books yet"
+  def list_all_genre
+    if @genres.empty?
+      puts "\nThis is empty! :("
     else
-      puts "\nList of books"
-      @books_list.each_with_index do |book, index|
-        puts "#{index}: #{book.label.title} by #{book.autor.first_name} #{book.author.last_name}"
+      puts "\nList all albums"
+      @genres.each do |element|
+        puts " ID: #{element.id}, Genre: #{element.name}"
       end
     end
   end
@@ -34,22 +37,43 @@ class App
     end
   end
 
+  def list_all_books
+    if @books_list.empty?
+      puts "\nThere is no books yet"
+    else
+      puts "\nList of books"
+      @books_list.each_with_index do |book, index|
+        puts "#{index}: #{book.label.title} by #{book.author.first_name} #{book.author.last_name}"
+      end
+    end
+  end
+
+  def list_all_labels
+    if @labels.empty?
+      puts "\nThere is no labels yet"
+    else
+      @labels.each_with_index do |label, index|
+        puts "#{index}: #{label.title}, #{label.color}"
+      end
+    end
+  end
+
   def add_a_book
-    p "Book's tittle: "
+    print "Book's tittle: "
     title = gets.chomp
-    p "Author's first name: "
+    print "Author's first name: "
     author_name = gets.chomp
-    p "Author's last name: "
+    print "Author's last name: "
     author_last_name = gets.chomp
-    p "Book's publish date [dd/mm/yyyy]: "
+    print "Book's publish date [dd/mm/yyyy]: "
     publish_date = gets.chomp
-    p "Book's publisher: "
+    print "Book's publisher: "
     publisher = gets.chomp
-    p "Book's genre: "
+    print "Book's genre: "
     genre = gets.chomp
-    p "Book's cover color"
+    print "Book's cover color: "
     color = gets.chomp
-    p "Book's cover state: "
+    print "Book's cover state: "
     cover_state = gets.chomp
 
     book = create_book(publish_date, publisher, cover_state, genre)
@@ -59,11 +83,13 @@ class App
   end
 
   def create_author(author_name, author_last_name)
-    Author.new(author_name, author_last_name)
+    Author.new(nil, author_name, author_last_name)
   end
 
   def create_label(title, color)
-    Label.new(title, color)
+    label = Label.new(title, color)
+    @labels << label
+    label
   end
 
   def create_book(publish_date, publisher, cover_state, genre)
@@ -97,17 +123,6 @@ class App
 
     @albums << new_album
     @genres << genre
-  end
-
-  def list_all_genre
-    if @genres.empty?
-      puts "\nThis is empty! :("
-    else
-      puts "\nList all albums"
-      @genres.each do |element|
-        puts " ID: #{element.id}, Genre: #{element.name}"
-      end
-    end
   end
 
   def end_app
