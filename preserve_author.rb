@@ -2,12 +2,13 @@ require 'json'
 
 class PreserveAuthor
   def gets_author
-    return unless File.exist?('./author.json')
+    return unless File.exist?('./authors.json')
 
     saved_authors = []
     file = File.read('./authors.json')
-    data_hash = JSON.parse(file)
+    return [] if file.empty?
 
+    data_hash = JSON.parse(file)
     data_hash.each do |author_data|
       author = Author.new(
         id: author_data['id'],

@@ -6,19 +6,16 @@ class PreserveGames
 
     saved_games = []
     file = File.read('./games.json')
-    data_hash = JSON.parse(file)
+    return [] if file.empty?
 
+    data_hash = JSON.parse(file)
     data_hash.each do |game_data|
-      # Pass keyword arguments with the correct keys
-      game = Game.new(
-        publish_date: game_data['publish_date'],
-        multiplayer: game_data['multiplayer'],
-        id: game_data['id'],
-        archived: game_data['archived'],
-        author: game_data['author'],
-        genre: game_data['genre'],
-        label: game_data['label']
-      )
+      game = Game.new(publish_date: game_data['publish_date'], multiplayer: game_data['multiplayer'])
+      game.id = game_data['id']
+      game.archived = game_data['archived']
+      game.author = game_data['author']
+      game.genre = game_data['genre']
+      game.label = game_data['label']
       saved_games << game
     end
     saved_games

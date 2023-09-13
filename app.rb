@@ -175,8 +175,11 @@ class App
     print 'Add a Label:'
     label_name = gets.chomp.to_s
 
-    game = Game.new(publish_date: publish_date, id: nil, archived: archived, multiplayer: multiplayer,
-                    author: author_name, genre: genre_name, label: label_name)
+    game = Game.new(publish_date: publish_date, multiplayer: multiplayer)
+    game.archived = archived
+    game.author = author_name
+    game.genre = genre_name
+    game.label = label_name
 
     @games << game
 
