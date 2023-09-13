@@ -4,6 +4,8 @@ require_relative 'book'
 require_relative 'author'
 require_relative 'label'
 require_relative 'game'
+require_relative 'preserve_games'
+require_relative 'preserve_author'
 
 class App
   def initialize
@@ -11,8 +13,8 @@ class App
     @genres = []
     @books_list = []
     @labels = []
-    @authors = []
-    @games = []
+    @authors = PreserveAuthor.new.gets_author || []
+    @games = PreserveGames.new.gets_games || []
   end
 
   def list_all_genre
@@ -139,6 +141,8 @@ class App
     print " Author added!: #{author.first_name} #{author.last_name} "
 
     @authors << author
+
+    PreserveAuthor.new.save_authors(@authors)
   end
 
   def list_all_authors
@@ -151,14 +155,14 @@ class App
       end
     end
   end
-  
+
   def add_a_game
     print 'Is it multiplayer? [y/n]:'
     multiplayer = gets.chomp.upcase == 'Y'
 
     print 'Is it archived? [y/n]:'
     archived = gets.chomp.upcase == 'Y'
-    
+
     print 'Add a Published date:'
     publish_date = gets.chomp.to_s
 
@@ -171,10 +175,12 @@ class App
     print 'Add a Label:'
     label_name = gets.chomp.to_s
 
-    game = Game.new(publish_date: publish_date, id: nil, archived: archived, multiplayer: multiplayer, author: author_name, genre: genre_name, label: label_name)
+    game = Game.new(publish_date: publish_date, id: nil, archived: archived, multiplayer: multiplayer,
+                    author: author_name, genre: genre_name, label: label_name)
 
     @games << game
-    
+
+    PreserveGames.new.save_games(@games)
   end
 
   def list_all_games
@@ -182,10 +188,13 @@ class App
       puts "\nThis is empty! :("
     else
       puts "\nList all games"
-      @games.each do |element|
-        puts "ID: #{element.id}
-        Published day: #{element.publish_date}
-        Archived: #{element.archived ? 'Yes' : 'No'}"
+      @games.each do |game|
+        puts "ID: #{game.id}
+        Published day: #{game.publish_date}
+        Archived: #{game.archived ? 'Yes' : 'No'}
+        Label: #{game.label}
+        Genre: #{game.genre}
+        Author: #{game.author}"
       end
     end
   end
