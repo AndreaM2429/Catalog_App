@@ -25,7 +25,7 @@ class Item
 
   def label=(label)
     @label = label
-    label.labels.push(self) unless label.labels.include?(self)
+    label.items.push(self) unless label.items.include?(self)
   end
 
   def move_to_archived
