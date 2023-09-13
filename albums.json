@@ -1,0 +1,30 @@
+[
+  {
+    "id": 30,
+    "publish_date": "01/01/2023",
+    "on_spotify": false,
+    "archived": false,
+    "genre": "ROCK"
+  },
+  {
+    "id": 918,
+    "publish_date": "18/02/2015",
+    "on_spotify": true,
+    "archived": false,
+    "genre": "POP"
+  },
+  {
+    "id": 566,
+    "publish_date": "01/01/2011",
+    "on_spotify": false,
+    "archived": false,
+    "genre": "CLASSIC"
+  },
+  {
+    "id": 298,
+    "publish_date": "01/01/2011",
+    "on_spotify": true,
+    "archived": true,
+    "genre": "ROCK"
+  }
+]
