@@ -1,12 +1,16 @@
 require_relative 'genre'
 require_relative 'music_album'
 require_relative 'book'
+require_relative 'preserve_album_genre'
+require_relative 'author'
 
 class App
   def initialize
     @albums = []
     @genres = []
     @books_list = []
+    @preserve_album_genre = PreserveAlbumGenre.new(@albums, @genres)
+    loading_data
   end
 
   def list_all_books
@@ -25,11 +29,11 @@ class App
       puts "\nThis is empty! :("
     else
       puts "\nList all albums"
-      @albums.each do |element|
-        puts "ID: #{element.id}
-        Published day: #{element.publish_date}
-        Archived: #{element.archived ? 'Yes' : 'No'}
-        Spotify: #{element.on_spotify ? 'Yes' : 'No'}"
+      @albums.each_with_index do |element, index|
+        puts "#{index})
+        #{element.genre} Album by {element.author.first_name} {element.author.last_name}
+        published on #{element.publish_date}, #{element.on_spotify ? 'It is' : 'IT is Not'} available on Spotify
+        Archived: #{element.archived ? 'Yes' : 'No'}"
       end
     end
   end
@@ -73,21 +77,21 @@ class App
   end
 
   def add_a_music_album
-    print 'Add a Published date:'
+    print 'Add Published date [dd/mm/yyyy]:'
     publish_date = gets.chomp.to_s
-
     print 'Is it on Spotify? [y/n]:'
     on_spotify = gets.chomp.upcase == 'Y'
-
-    print 'Add a genre:'
-    genre = Genre.new(gets.chomp.to_s)
-
+    print 'Add a Genre:'
+    genre = Genre.new(gets.chomp.to_s.upcase)
     # print 'Add a label:'
     # label = Label.new(gets.chomp.to_s)
+    # print "Add author's first name:"
+    # first = gets.chomp.to_s
+    # print "Add author's last name:"
+    # last = gets.chomp.to_s
 
-    # print 'Add a author:'
-    # author = Author.new(gets.chomp.to_s)
-
+    # author = Author.new(first, last)
+    # label = Label.new(label)
     new_album = MusicAlbum.new(publish_date, on_spotify: on_spotify)
 
     new_album.genre = genre
@@ -96,7 +100,8 @@ class App
     new_album.move_to_archived
 
     @albums << new_album
-    @genres << genre
+
+    @genres << genre unless @genres.find { |g| g.name == genre.name }
   end
 
   def list_all_genre
@@ -110,7 +115,14 @@ class App
     end
   end
 
+  def loading_data
+    @preserve_album_genre.load_music_albums
+    @preserve_album_genre.load_genres
+  end
+
   def end_app
+    @preserve_album_genre.save_genres
+    @preserve_album_genre.save_music_albums
     puts 'Thank you for using this app (•◡•)丿'
     exit
   end
