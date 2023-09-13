@@ -10,6 +10,7 @@ class App
     @albums = []
     @genres = []
     @books_list = []
+    @labels = []
     @preserve_album_genre = PreserveAlbumGenre.new(@albums, @genres)
     loading_data
   end
@@ -107,27 +108,29 @@ class App
     print 'Is it on Spotify? [y/n]:'
     on_spotify = gets.chomp.upcase == 'Y'
     print 'Add a Genre:'
-    genre = Genre.new(gets.chomp.to_s.upcase)
+    genre = gets.chomp.to_s.upcase
     print 'Add a title: '
     title = gets.chomp.to_s
     print 'Add a color: '
     color = gets.chomp.to_s
-    label = create_label(title, color)
     # print "Add author's first name:"
     # first = gets.chomp.to_s
     # print "Add author's last name:"
     # last = gets.chomp.to_s
     # author = Author.new(first_name: first, last_name: last)
-
     new_album = MusicAlbum.new(publish_date, on_spotify: on_spotify)
-    new_album.genre = genre
-    new_album.label = label
+    new_album.genre = create_genre(genre)
+    new_album.label = create_label(title, color)
     # new_album.author = author
     new_album.move_to_archived
 
     @albums << new_album
+  end
 
-    @genres << genre unless @genres.find { |g| g.name == genre.name }
+  def create_genre(genre)
+    new_genre = Genre.new(genre)
+    @genres << new_genre unless @genres.find { |g| g.name == new_genre.name }
+    new_genre
   end
 
   def loading_data
