@@ -3,6 +3,7 @@ require_relative 'music_album'
 require_relative 'book'
 require_relative 'author'
 require_relative 'label'
+require_relative 'game'
 
 class App
   def initialize
@@ -10,6 +11,8 @@ class App
     @genres = []
     @books_list = []
     @labels = []
+    @authors = []
+    @games = []
   end
 
   def list_all_genre
@@ -82,9 +85,9 @@ class App
     @books_list << book
   end
 
-  def create_author(author_name, author_last_name)
-    Author.new(first_name: author_name, last_name: author_last_name)
-  end
+  # def create_author(author_name, author_last_name)
+  #   Author.new(first_name: author_name, last_name: author_last_name)
+  # end
 
   def create_label(title, color)
     label = Label.new(title, color)
@@ -123,6 +126,68 @@ class App
 
     @albums << new_album
     @genres << genre
+  end
+
+  def add_an_author
+    print 'Add an Author:'
+    puts 'Add Author`s first name:'
+    first_name = gets.chomp.to_s
+    puts 'Add Author`s last name:'
+    last_name = gets.chomp.to_s
+
+    author = Author.new(first_name: first_name, last_name: last_name)
+    print " Author added!: #{author.first_name} #{author.last_name} "
+
+    @authors << author
+  end
+
+  def list_all_authors
+    if @authors.empty?
+      puts "\nThis is empty! :("
+    else
+      puts "\nList all authors:"
+      @authors.each do |author|
+        puts " First Name: #{author.first_name}, Last Name: #{author.last_name} "
+      end
+    end
+  end
+  
+  def add_a_game
+    print 'Is it multiplayer? [y/n]:'
+    multiplayer = gets.chomp.upcase == 'Y'
+
+    print 'Is it archived? [y/n]:'
+    archived = gets.chomp.upcase == 'Y'
+    
+    print 'Add a Published date:'
+    publish_date = gets.chomp.to_s
+
+    print 'Add an Author:'
+    author_name = gets.chomp.to_s
+
+    print 'Add a Genre:'
+    genre_name = gets.chomp.to_s
+
+    print 'Add a Label:'
+    label_name = gets.chomp.to_s
+
+    game = Game.new(publish_date: publish_date, id: nil, archived: archived, multiplayer: multiplayer, author: author_name, genre: genre_name, label: label_name)
+
+    @games << game
+    
+  end
+
+  def list_all_games
+    if @games.empty?
+      puts "\nThis is empty! :("
+    else
+      puts "\nList all games"
+      @games.each do |element|
+        puts "ID: #{element.id}
+        Published day: #{element.publish_date}
+        Archived: #{element.archived ? 'Yes' : 'No'}"
+      end
+    end
   end
 
   def end_app
