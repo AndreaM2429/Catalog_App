@@ -39,7 +39,7 @@ class App
       @albums.each_with_index do |element, index|
         puts "#{index})
         '#{element.genre}' Album named '#{element.label.title}', with a '#{element.label.color}' Cover
-        by '{element.author.first_name} {element.author.last_name}'
+        by '#{element.author.first_name} #{element.author.last_name}'
         published on #{element.publish_date}, #{element.on_spotify ? 'It is' : 'IT is Not'} available on Spotify
         Archived: #{element.archived ? 'Yes' : 'No'}"
       end
@@ -91,9 +91,11 @@ class App
     @books_list << book
   end
 
-  # def create_author(author_name, author_last_name)
-  #   Author.new(first_name: author_name, last_name: author_last_name)
-  # end
+  def create_author(first, last)
+    author = Author.new(first_name: first, last_name: last)
+    @authors << author
+    author
+  end
 
   def create_label(title, color)
     label = Label.new(title, color)
@@ -118,17 +120,15 @@ class App
     title = gets.chomp.to_s
     print 'Add a color: '
     color = gets.chomp.to_s
-    # print "Add author's first name:"
-    # first = gets.chomp.to_s
-    # print "Add author's last name:"
-    # last = gets.chomp.to_s
-    # author = Author.new(first_name: first, last_name: last)
-    new_album = MusicAlbum.new(publish_date, on_spotify: on_spotify)
+    print "Add author's first name:"
+    first = gets.chomp.to_s
+    print "Add author's last name:"
+    last = gets.chomp.to_s
+    new_album = MusicAlbum.new(publish_date: publish_date, on_spotify: on_spotify)
     new_album.genre = create_genre(genre)
     new_album.label = create_label(title, color)
-    # new_album.author = author
+    new_album.author = create_author(first, last)
     new_album.move_to_archived
-
     @albums << new_album
   end
 
