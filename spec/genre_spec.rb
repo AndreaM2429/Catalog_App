@@ -20,5 +20,13 @@ describe Genre do
       # Act #Assert
       expect(genre.items).to be_empty
     end
+
+    it 'should add an item to its items' do
+      # Act
+      item = Item.new(publish_date: '21/01/2020')
+      genre.add_item(item)
+      # Assert
+      expect(genre.items).to include(item)
+    end
   end
 end
