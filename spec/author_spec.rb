@@ -5,8 +5,6 @@ describe Author do
   context 'When testing the Author class' do
     it 'should return the author name: Nicolas Bolañez' do
       @author = Author.new(first_name: 'Nicolas', last_name: 'Bolañez')
-      puts @author.first_name
-      puts @author.last_name
       expect(@author.first_name).to eq 'Nicolas'
       expect(@author.last_name).to eq 'Bolañez'
     end
