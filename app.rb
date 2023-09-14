@@ -7,17 +7,19 @@ require_relative 'preserve_album_genre'
 require_relative 'game'
 require_relative 'preserve_games'
 require_relative 'preserve_author'
+require_relative 'preserve_book'
+require_relative 'preserve_label'
 
 class App
   def initialize
     @albums = []
     @genres = []
-    @books_list = []
-    @labels = []
+    @labels = PreserveLabels.new.gets_labels || []
     @preserve_album_genre = PreserveAlbumGenre.new(@albums, @genres)
     @authors = PreserveAuthor.new.gets_author || []
     @games = PreserveGames.new.gets_games || []
     loading_data
+    @books_list = PreserveBooks.new.gets_books(@genres, @authors, @labels) || []
   end
 
   def list_all_genre
@@ -52,7 +54,11 @@ class App
     else
       puts "\nList of books"
       @books_list.each_with_index do |book, index|
-        puts "#{index}: #{book.label.title} by #{book.author.first_name} #{book.author.last_name}"
+        puts "#{index}:
+        Title: #{book.label.title}
+        Author: #{book.author.first_name} #{book.author.last_name}
+        Archived: #{book.archived}
+        Genre: #{book.genre}"
       end
     end
   end
@@ -74,39 +80,39 @@ class App
     author_name = gets.chomp
     print "Author's last name: "
     author_last_name = gets.chomp
-    print "Book's publish date [dd/mm/yyyy]: "
-    publish_date = gets.chomp
-    print "Book's publisher: "
-    publisher = gets.chomp
     print "Book's genre: "
     genre = gets.chomp
     print "Book's cover color: "
     color = gets.chomp
-    print "Book's cover state: "
-    cover_state = gets.chomp
 
-    book = create_book(publish_date, publisher, cover_state, genre)
+    book = create_book
+    book.genre = create_genre(genre)
     book.author = create_author(author_name, author_last_name)
     book.label = create_label(title, color)
+    book.archived = book.can_be_archived?
     @books_list << book
   end
 
   def create_author(first, last)
     author = Author.new(first_name: first, last_name: last)
-    @authors << author
+    @authors << author unless @authors.find { |a| a.first_name == author.first_name }
     author
   end
 
   def create_label(title, color)
     label = Label.new(title, color)
-    @labels << label
+    @labels << label unless @labels.find { |l| l.title == label.title }
     label
   end
 
-  def create_book(publish_date, publisher, cover_state, genre)
-    new_book = Book.new(publish_date, publisher, cover_state, nil, false)
-    new_book.genre = Genre.new(genre)
-    new_book
+  def create_book
+    print "Book's publish date [dd/mm/yyyy]: "
+    publish_date = gets.chomp
+    print "Book's publisher: "
+    publisher = gets.chomp
+    print "Book's cover state: "
+    cover_state = gets.chomp
+    Book.new(publish_date: publish_date, publisher: publisher, cover_state: cover_state)
   end
 
   def add_a_music_album
@@ -143,28 +149,13 @@ class App
     @preserve_album_genre.load_genres
   end
 
-  def add_an_author
-    print 'Add an Author:'
-    puts 'Add Author`s first name:'
-    first_name = gets.chomp.to_s
-    puts 'Add Author`s last name:'
-    last_name = gets.chomp.to_s
-
-    author = Author.new(first_name: first_name, last_name: last_name)
-    print " Author added!: #{author.first_name} #{author.last_name} "
-
-    @authors << author
-
-    PreserveAuthor.new.save_authors(@authors)
-  end
-
   def list_all_authors
     if @authors.empty?
       puts "\nThis is empty! :("
     else
       puts "\nList all authors:"
-      @authors.each do |author|
-        puts " First Name: #{author.first_name}, Last Name: #{author.last_name} "
+      @authors.each_with_index do |author, index|
+        puts " #{index}: #{author.first_name} #{author.last_name} "
       end
     end
   end
@@ -173,11 +164,8 @@ class App
     print 'Is it multiplayer? [y/n]:'
     multiplayer = gets.chomp.upcase == 'Y'
 
-    print 'Is it archived? [y/n]:'
-    archived = gets.chomp.upcase == 'Y'
-
-    print 'Add a Published date:'
-    publish_date = gets.chomp.to_s
+    print 'Add a Published date [dd/mm/yyyy] :'
+    publish_date = gets.chomp
 
     print 'Add an Author:'
     author_name = gets.chomp.to_s
@@ -185,18 +173,16 @@ class App
     print 'Add a Genre:'
     genre_name = gets.chomp.to_s
 
-    print 'Add a Label:'
+    print 'Add a Title:'
     label_name = gets.chomp.to_s
 
     game = Game.new(publish_date: publish_date, multiplayer: multiplayer)
-    game.archived = archived
-    game.author = author_name
-    game.genre = genre_name
-    game.label = label_name
+    game.archived = game.can_be_archived?
+    game.author = create_author(author_name, '')
+    game.genre = create_genre(genre_name)
+    game.label = create_label(label_name, 'N/A')
 
     @games << game
-
-    PreserveGames.new.save_games(@games)
   end
 
   def list_all_games
@@ -208,16 +194,20 @@ class App
         puts "ID: #{game.id}
         Published day: #{game.publish_date}
         Archived: #{game.archived ? 'Yes' : 'No'}
-        Label: #{game.label}
-        Genre: #{game.genre}
-        Author: #{game.author}"
+        Label: #{game.label.title}
+        Genre: #{game.genre.name}
+        Author: #{game.author.first_name}"
       end
     end
   end
 
   def end_app
+    PreserveAuthor.new.save_authors(@authors)
+    PreserveGames.new.save_games(@games)
     @preserve_album_genre.save_genres
     @preserve_album_genre.save_music_albums
+    PreserveBooks.new.save_books(@books_list)
+    PreserveLabels.new.save_labels(@labels)
     puts 'Thank you for using this app (•◡•)丿'
     exit
   end
