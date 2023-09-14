@@ -20,7 +20,7 @@ class Item
 
   def author=(author)
     @author = author
-    author.authors.push(self) unless author.authors.include?(self)
+    author.item.push(self) unless author.item.include?(self)
   end
 
   def label=(label)
@@ -29,7 +29,7 @@ class Item
   end
 
   def move_to_archived
-    @archived = true if can_be_archieved?
+    @archived = true if can_be_archived?
   end
 
   private
